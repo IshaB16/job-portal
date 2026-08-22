@@ -5,6 +5,7 @@ import com.isha.job_portal.dto.LoginResponse;
 import com.isha.job_portal.dto.UserRegisterRequest;
 import com.isha.job_portal.dto.UserResponse;
 import com.isha.job_portal.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,12 +19,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserResponse register(@RequestBody UserRegisterRequest request) {
+    public UserResponse register(@Valid @RequestBody UserRegisterRequest request) {
         return userService.registerUser(request);
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return userService.login(request);
     }
 }

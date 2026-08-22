@@ -6,6 +6,7 @@ import com.isha.job_portal.dto.UserRegisterRequest;
 import com.isha.job_portal.dto.UserResponse;
 import com.isha.job_portal.entity.Role;
 import com.isha.job_portal.entity.User;
+import com.isha.job_portal.exception.InvalidCredentialsException;
 import com.isha.job_portal.repository.UserRepository;
 import com.isha.job_portal.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,10 +44,10 @@ public class UserService {
 
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());

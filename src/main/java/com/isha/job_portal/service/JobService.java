@@ -4,6 +4,7 @@ import com.isha.job_portal.dto.JobRequest;
 import com.isha.job_portal.dto.JobResponse;
 import com.isha.job_portal.entity.Job;
 import com.isha.job_portal.entity.User;
+import com.isha.job_portal.exception.ResourceNotFoundException;
 import com.isha.job_portal.repository.JobRepository;
 import com.isha.job_portal.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class JobService {
 
     public JobResponse postJob(JobRequest request, String recruiterEmail) {
         User recruiter = userRepository.findByEmail(recruiterEmail)
-                .orElseThrow(() -> new RuntimeException("Recruiter not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Recruiter not found"));
 
         Job job = new Job();
         job.setTitle(request.getTitle());

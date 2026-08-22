@@ -3,6 +3,7 @@ package com.isha.job_portal.controller;
 import com.isha.job_portal.dto.JobRequest;
 import com.isha.job_portal.dto.JobResponse;
 import com.isha.job_portal.service.JobService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class JobController {
     }
 
     @PostMapping
-    public JobResponse postJob(@RequestBody JobRequest request, Authentication authentication) {
-        String recruiterEmail = authentication.getName(); // extracted from JWT by our filter
+    public JobResponse postJob(@Valid @RequestBody JobRequest request, Authentication authentication) {
+        String recruiterEmail = authentication.getName();
         return jobService.postJob(request, recruiterEmail);
     }
 

@@ -1,11 +1,13 @@
 package com.isha.job_portal.service;
 
-import com.isha.job_portal.entity.ApplicationStatus;
 import com.isha.job_portal.dto.ApplicationRequest;
 import com.isha.job_portal.dto.ApplicationResponse;
 import com.isha.job_portal.entity.Application;
+import com.isha.job_portal.entity.ApplicationStatus;
 import com.isha.job_portal.entity.Job;
 import com.isha.job_portal.entity.User;
+import com.isha.job_portal.exception.ResourceNotFoundException;
+import com.isha.job_portal.exception.UnauthorizedActionException;
 import com.isha.job_portal.repository.ApplicationRepository;
 import com.isha.job_portal.repository.JobRepository;
 import com.isha.job_portal.repository.UserRepository;
@@ -28,10 +30,10 @@ public class ApplicationService {
 
     public ApplicationResponse applyToJob(ApplicationRequest request, String applicantEmail) {
         User applicant = userRepository.findByEmail(applicantEmail)
-                .orElseThrow(() -> new RuntimeException("Applicant not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Applicant not found"));
 
         Job job = jobRepository.findById(request.getJobId())
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
 
         Application application = new Application();
         application.setJob(job);
@@ -43,7 +45,7 @@ public class ApplicationService {
 
     public List<ApplicationResponse> getMyApplications(String applicantEmail) {
         User applicant = userRepository.findByEmail(applicantEmail)
-                .orElseThrow(() -> new RuntimeException("Applicant not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Applicant not found"));
 
         return applicationRepository.findByApplicantId(applicant.getId())
                 .stream().map(this::toResponse).toList();
@@ -51,10 +53,10 @@ public class ApplicationService {
 
     public List<ApplicationResponse> getApplicationsForJob(Long jobId, String recruiterEmail) {
         Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Job not found"));
 
         if (!job.getPostedBy().getEmail().equals(recruiterEmail)) {
-            throw new RuntimeException("You are not authorized to view applications for this job");
+            throw new UnauthorizedActionException("You are not authorized to view applications for this job");
         }
 
         return applicationRepository.findByJobId(jobId)
@@ -63,10 +65,10 @@ public class ApplicationService {
 
     public ApplicationResponse updateStatus(Long applicationId, String newStatus, String recruiterEmail) {
         Application application = applicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
 
         if (!application.getJob().getPostedBy().getEmail().equals(recruiterEmail)) {
-            throw new RuntimeException("You are not authorized to update this application");
+            throw new UnauthorizedActionException("You are not authorized to update this application");
         }
 
         application.setStatus(ApplicationStatus.valueOf(newStatus.toUpperCase()));

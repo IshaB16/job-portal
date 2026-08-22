@@ -1,5 +1,6 @@
 package com.isha.job_portal.service;
 
+import com.isha.job_portal.entity.ApplicationStatus;
 import com.isha.job_portal.dto.ApplicationRequest;
 import com.isha.job_portal.dto.ApplicationResponse;
 import com.isha.job_portal.entity.Application;
@@ -46,6 +47,31 @@ public class ApplicationService {
 
         return applicationRepository.findByApplicantId(applicant.getId())
                 .stream().map(this::toResponse).toList();
+    }
+
+    public List<ApplicationResponse> getApplicationsForJob(Long jobId, String recruiterEmail) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+
+        if (!job.getPostedBy().getEmail().equals(recruiterEmail)) {
+            throw new RuntimeException("You are not authorized to view applications for this job");
+        }
+
+        return applicationRepository.findByJobId(jobId)
+                .stream().map(this::toResponse).toList();
+    }
+
+    public ApplicationResponse updateStatus(Long applicationId, String newStatus, String recruiterEmail) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (!application.getJob().getPostedBy().getEmail().equals(recruiterEmail)) {
+            throw new RuntimeException("You are not authorized to update this application");
+        }
+
+        application.setStatus(ApplicationStatus.valueOf(newStatus.toUpperCase()));
+        Application updated = applicationRepository.save(application);
+        return toResponse(updated);
     }
 
     private ApplicationResponse toResponse(Application application) {

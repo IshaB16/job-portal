@@ -1,5 +1,6 @@
 package com.isha.job_portal.controller;
 
+import com.isha.job_portal.dto.StatusUpdateRequest;
 import com.isha.job_portal.dto.ApplicationRequest;
 import com.isha.job_portal.dto.ApplicationResponse;
 import com.isha.job_portal.service.ApplicationService;
@@ -28,5 +29,19 @@ public class ApplicationController {
     public List<ApplicationResponse> myApplications(Authentication authentication) {
         String applicantEmail = authentication.getName();
         return applicationService.getMyApplications(applicantEmail);
+    }
+
+    @GetMapping("/job/{jobId}")
+    public List<ApplicationResponse> getApplicationsForJob(@PathVariable Long jobId, Authentication authentication) {
+        String recruiterEmail = authentication.getName();
+        return applicationService.getApplicationsForJob(jobId, recruiterEmail);
+    }
+
+    @PutMapping("/{applicationId}/status")
+    public ApplicationResponse updateStatus(@PathVariable Long applicationId,
+                                            @RequestBody StatusUpdateRequest request,
+                                            Authentication authentication) {
+        String recruiterEmail = authentication.getName();
+        return applicationService.updateStatus(applicationId, request.getStatus(), recruiterEmail);
     }
 }

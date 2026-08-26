@@ -1,5 +1,7 @@
 package com.isha.job_portal.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.isha.job_portal.dto.JobRequest;
 import com.isha.job_portal.dto.JobResponse;
 import com.isha.job_portal.entity.Job;
@@ -53,5 +55,10 @@ public class JobService {
         response.setPostedByEmail(job.getPostedBy().getEmail());
         response.setCreatedAt(job.getCreatedAt());
         return response;
+    }
+
+    public Page<JobResponse> getFilteredJobs(String location, String skills, Double minSalary, Pageable pageable) {
+        Page<Job> jobs = jobRepository.findJobsWithFilters(location, skills, minSalary, pageable);
+        return jobs.map(this::toResponse);
     }
 }

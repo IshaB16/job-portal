@@ -1,5 +1,8 @@
 package com.isha.job_portal.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import com.isha.job_portal.dto.JobRequest;
 import com.isha.job_portal.dto.JobResponse;
 import com.isha.job_portal.service.JobService;
@@ -26,7 +29,11 @@ public class JobController {
     }
 
     @GetMapping
-    public List<JobResponse> getAllJobs() {
-        return jobService.getAllJobs();
+    public Page<JobResponse> getAllJobs(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String skills,
+            @RequestParam(required = false) Double minSalary,
+            @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
+        return jobService.getFilteredJobs(location, skills, minSalary, pageable);
     }
 }

@@ -43,8 +43,8 @@ A backend REST API for a job portal platform, supporting recruiters posting jobs
 
 1. Clone the repository:
 
-    git clone https://github.com/IshaB16/job-portal.git
-cd job-portal
+   git clone https://github.com/IshaB16/job-portal.git
+   cd job-portal
 
 2. Create the MySQL database:
 ```sql
@@ -55,7 +55,7 @@ cd job-portal
 
 4. Run the application:
    ./mvnw spring-boot:run
-   
+
 5. Access the API at `http://localhost:8080`, or explore it interactively via Swagger at `http://localhost:8080/swagger-ui/index.html`.
 
 ## API Overview

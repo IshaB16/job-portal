@@ -4,7 +4,6 @@
 
 - **API Base URL:** https://job-portal-9skh.onrender.com
 - **Swagger Docs:** https://job-portal-9skh.onrender.com/swagger-ui/index.html
-
 > Note: hosted on Render's free tier — the server may take ~50 seconds to wake up after inactivity.
 
 A backend REST API for a job portal platform, supporting recruiters posting jobs and applicants applying to them, with JWT-based authentication and role-based access control.
